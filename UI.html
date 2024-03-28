@@ -1,11 +1,26 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>Google Pub/Sub</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Pub/Sub Messages</title>
 </head>
-<body>		
-    <header> <h1>Google Pub/Sub</h1>
-        <h2>Homepage</h2>
+<body>
+  <h1>Messages from Google Pub/Sub:</h1>
+  <ul id="messages"></ul>
+
+  <script>
+    // Connect to server using WebSocket or Socket.io
+    // When a message is received from the server, update the HTML
+    // For simplicity, I'll use console.log here.
+    const socket = new WebSocket('ws://localhost:3000');
+
+    socket.onmessage = function(event) {
+      const message = event.data;
+      const li = document.createElement('li');
+      li.textContent = message;
+      document.getElementById('messages').appendChild(li);
+    };
+  </script>
 </body>
-</html>        
+</html>
