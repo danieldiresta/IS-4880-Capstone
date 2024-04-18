@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Pub/Sub Message Display</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .highlighted {
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Google Pub/Sub Message Display</h1>
+    <table id="data-table">
+        <thead>
+            <tr>
+                <th>TransactionNumber</th>
+                <th>TransactionDateTime</th>
+                <th>ItemId</th>
+                <th>Location</th>
+                <th>Quantity</th>
+                <th>Status</th>
+                <th>NextAvailabilityDate</th>
+                <th>TotalIncludingSubstituteItems</th>
+                <th>SubstituteItemsAvailable</th>
+                <th>SubstitutionDetails</th>
+                <th>FirstAvailableFutureQuantity</th>
+                <th>FirstAvailableFutureDate</th>
+            </tr>
+        </thead>
+        <tbody id="data-body">
+            
+        </tbody>
+    </table>
+
+    <script>
+        // Fetchs data from flask server 
+        async function fetchData() {
+            try {
+                const response = await fetch('/data');
+                const data = await response.json();
+                const tableBody = document.getElementById('data-body');
+                const transactionNumbers = {}; 
+                
+                data.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${row.TransactionNumber}</td>
+                        <td>${row.TransactionDateTime}</td>
+                        <td>${row.ItemId}</td>
+                        <td>${row.Location}</td>
+                        <td>${row.Quantity}</td>
+                        <td>${row.Status}</td>
+                        <td>${row.NextAvailabilityDate}</td>
+                        <td>${row.TotalIncludingSubstituteItems}</td>
+                        <td>${row.SubstituteItemsAvailable}</td>
+                        <td>${row.SubstitutionDetails}</td>
+                        <td>${row.FirstAvailableFutureQuantity}</td>
+                        <td>${row.FirstAvailableFutureDate}</td>
+                        <!-- Add more table data cells as needed -->
+                    `;
+                    
+                    // Check if TransactionNumber is already encountered
+                    if (transactionNumbers[row.TransactionNumber]) {
+                        // If duplicate, apply highlighted class to table row
+                        tr.classList.add('highlighted');
+                    } else {
+                        // If not duplicate, mark TransactionNumber as encountered
+                        transactionNumbers[row.TransactionNumber] = true;
+                    }
+                    
+                    tableBody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        // Call fetchData function when the page loads
+        window.onload = fetchData;
+    </script>
+</body>
+</html>
